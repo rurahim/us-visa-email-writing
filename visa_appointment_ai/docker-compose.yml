@@ -1,12 +1,30 @@
 version: '3.8'
 
 services:
-  visa_app:
-    build: .
-    container_name: visa_appointment_ai
-    env_file:
-      - .env
-    volumes:
-      - .:/app
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
+    volumes:
+      - .:/app
+    networks:
+      - visa_network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    depends_on:
+      - backend
+    networks:
+      - visa_network
+
+networks:
+  visa_network:
+    driver: bridge
